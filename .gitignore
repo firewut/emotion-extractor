@@ -1,0 +1,15 @@
+.DS_Store
+
+
+# vim cache files
+*.swp
+build
+
+# callgrind files
+callgrind.out.*
+
+# ignore perf output
+*/perf.data
+
+# Atom specific
+*.h.gch
