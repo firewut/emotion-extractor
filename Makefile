@@ -25,6 +25,6 @@ build: clean prepare_dirs
 		$(BUILD_PATH)/src/*.cpp
 
 run: build
-	$(BUILD_PATH)/bin/project $(TEST_FILE_NAME)
+	time $(BUILD_PATH)/bin/project $(TEST_FILE_NAME)
 
 .PHONY: all clean
