@@ -100,7 +100,7 @@ int main(int argc, char** argv){
         std::vector< std::vector<std::string> > timeranges = emotions[i].get_time_ranges(fps);
         for(int j = 0; j < timeranges.size(); j++) {
             if(timeranges[j].size() == 2){
-                std::cout << emotions[i].title << ": " << timeranges[j][0] << " - " << timeranges[j][1] << '\n';
+                std::cout << emotions[i].title << " - " << timeranges[j][0] << " - " << timeranges[j][1] << '\n';
             }
         }
     }
