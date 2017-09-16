@@ -69,13 +69,13 @@ int main(int argc, char** argv){
         }
         frames_counter++;
 
-        printProgress(double(frames_counter/double(total_frames)));
+        printProgress(frames_counter/double(total_frames));
         if(frames_counter == total_frames){
             break;
         }
 
         // We do not need to process every frame. Only 50 ms boundary
-        int time_position_remainder = remainder(double(frames_counter), double(fps));
+        int time_position_remainder = remainder(frames_counter, fps);
         if(time_position_remainder%FRAME_CHECK_INTERVAL!=0){
             continue;
         }
