@@ -158,7 +158,6 @@ void Emotion::join_frames(int success_frames_count){
             std::remove(disappear_frames.begin(), disappear_frames.end(), -1),
             disappear_frames.end()
         );
-
         join_frames(success_frames_count);
     }
 }

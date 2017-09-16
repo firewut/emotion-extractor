@@ -8,6 +8,8 @@
 
 #define MAIN_WINDOW_NAME "Main"
 #define SUCCESS_DURATION 2   // Duration of emotion for SUCCESS. Seconds
+#define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+#define PBWIDTH 60
 
 Cascade face(
   "face",
@@ -18,6 +20,8 @@ Cascade smile(
   "smile",
   "./haarcascades/haarcascade_smile.xml"
 );
+
+void printProgress(double);
 
 int main(int argc, char** argv){
     std::vector<Cascade> classifier_cascades {
@@ -50,8 +54,10 @@ int main(int argc, char** argv){
     // Meta info
     int fps = (int)capture.get(CV_CAP_PROP_FPS);
     int frames_counter = 0;
+    int total_frames = (int)capture.get(CV_CAP_PROP_FRAME_COUNT);
 
     bool detected_state;
+
     while(true){
         capture >> frame;
         if(frame.empty()){
@@ -81,11 +87,8 @@ int main(int argc, char** argv){
             detected_state = detected;
         }
 
-        if(frames_counter > 300){
-            break;
-        }
+        printProgress(double(frames_counter/double(total_frames)));
     }
-
 
     // Normalize emotion frames
     for(size_t i = 0; i < emotions.size(); i++) {
@@ -104,4 +107,12 @@ int main(int argc, char** argv){
             }
         }
     }
+}
+
+void printProgress (double percentage){
+    int val = (int) (percentage * 100);
+    int lpad = (int) (percentage * PBWIDTH);
+    int rpad = PBWIDTH - lpad;
+    printf ("\r%3d%% [%.*s%*s]", val, lpad, PBSTR, rpad, "");
+    fflush (stdout);
 }
