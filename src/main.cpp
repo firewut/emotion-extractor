@@ -11,8 +11,8 @@
 #define MAIN_WINDOW_NAME "Main"
 #define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
 #define PBWIDTH 60
-#define SUCCESS_DURATION 2      // Duration of emotion for SUCCESS. Seconds
-#define FRAME_CHECK_INTERVAL 100 // Milliseconds
+#define SUCCESS_DURATION 5       // Duration of emotion for SUCCESS. Seconds
+#define FRAME_CHECK_INTERVAL 300 // Milliseconds
 
 Cascade face(
   "face",
@@ -70,16 +70,12 @@ int main(int argc, char** argv){
         frames_counter++;
 
         printProgress(frames_counter/double(total_frames));
-        if(frames_counter == total_frames){
-            break;
-        }
 
         // We do not need to process every frame. Only 50 ms boundary
         int time_position_remainder = remainder(frames_counter, fps);
         if(time_position_remainder%FRAME_CHECK_INTERVAL!=0){
             continue;
         }
-
 
         if(cvMatEQ(prev_frame, frame) == true){
             continue;
@@ -94,6 +90,9 @@ int main(int argc, char** argv){
             );
 
             if(detected){
+                // cv::imshow(MAIN_WINDOW_NAME, emotion_frame);
+                // cv::waitKey(1);
+
                 // Appeared
                 if(!detected_state) {
                     emotions[i].event_at_frame(frames_counter, true);

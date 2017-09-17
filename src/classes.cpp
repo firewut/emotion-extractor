@@ -120,6 +120,27 @@ void Emotion::normalize_frames(int success_frames_count){
     );
 
     join_frames(success_frames_count);
+    remove_small_intervals(success_frames_count);
+}
+
+void Emotion::remove_small_intervals(int success_frames_count){
+    for(int i = 0; i < appear_frames.size(); i++){
+        int appear_frame = appear_frames[i];
+        int dissappear_frame = disappear_frames[i];
+        if(dissappear_frame - appear_frame < success_frames_count){
+            appear_frames[i] = -1;
+            disappear_frames[i] = -1;
+        }
+    }
+
+    appear_frames.erase(
+        std::remove(appear_frames.begin(), appear_frames.end(), -1),
+        appear_frames.end()
+    );
+    disappear_frames.erase(
+        std::remove(disappear_frames.begin(), disappear_frames.end(), -1),
+        disappear_frames.end()
+    );
 }
 
 void Emotion::join_frames(int success_frames_count){

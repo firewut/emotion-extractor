@@ -29,6 +29,7 @@ class Emotion {
     std::vector<int> disappear_frames;
 
     void join_frames(int);
+    void remove_small_intervals(int);
 
     public:
         std::string title;
