@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
 #include <map>
-#include <cstdlib>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -97,7 +96,7 @@ int main(int argc, char** argv){
                     cv::imshow(MAIN_WINDOW_NAME, emotion_frame);
                     cv::waitKey(1);
                 };
-                
+
                 // Appeared
                 if(!detected_state) {
                     emotions[i].event_at_frame(frames_counter, true);
