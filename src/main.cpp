@@ -45,7 +45,10 @@ int main(int argc, char** argv){
 
     // Open temporary file
     std::string filename = argv[1];
-    unsigned int debug = atoi(argv[2]);
+    unsigned int debug = 0;
+    if(argc == 3){
+      debug = atoi(argv[2]);
+    }
 
     cv::VideoCapture capture(filename);
     cv::Mat frame, prev_frame;

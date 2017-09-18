@@ -8,13 +8,13 @@
 #include <opencv2/core/core.hpp>
 
 class Classifier {
-    std::string title;
     std::string classifierFile;
 
     // Works as AND
     cv::CascadeClassifier cascadeClassifier;
 
     public:
+        std::string title;
         Classifier(
             std::string,
             std::string

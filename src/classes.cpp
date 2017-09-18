@@ -51,7 +51,7 @@ std::tuple<std::vector<cv::Rect>, cv::Mat> Classifier::detect(cv::Mat frame){
                 detections[d_i].x + detections[d_i].width,
                 detections[d_i].y + detections[d_i].height
             ),
-            cv::Scalar( 255, 0, 0 ),
+            cv::Scalar( 255, 255, 255 ),
             CV_FILLED,
             8,
             0
@@ -233,7 +233,7 @@ std::vector< std::vector<std::string> > Emotion::get_time_ranges(int fps){
 
 std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame){
     std::vector<cv::Rect> detections;
-    bool last_classifier_detection_success;
+    bool last_classifier_detection_success = false;
 
     // Possible
     cv::Mat frame_gray, frame_debug;
@@ -243,28 +243,21 @@ std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame){
         std::tie(detections, frame_gray) = classifiers[i].detect(
             frame_gray
         );
+        cv::putText(
+            frame_gray,
+            classifiers[i].title,
+            cv::Point2f(0,50),
+            cv::FONT_HERSHEY_PLAIN,
+            2,
+            cv::Scalar(255,255,255,.5)
+        );
         if(i == classifiers.size()-1){
             last_classifier_detection_success = detections.size() > 0;
-            frame_debug = frame_gray.clone();
+            if(last_classifier_detection_success == true){
+                frame_debug = frame_gray.clone();
+            }
         }
     }
 
-    // for(size_t i = 0; i < overall_detections.size(); i++) {
-    //     cv::rectangle(
-    //         frame,
-    //         cv::Point(
-    //           overall_detections[i].x,
-    //           overall_detections[i].y
-    //         ),
-    //         cv::Point(
-    //           overall_detections[i].x + overall_detections[i].width,
-    //           overall_detections[i].y + overall_detections[i].height
-    //         ),
-    //         cv::Scalar( 255, 0, 0 ),
-    //         2,
-    //         8,
-    //         0
-    //     );
-    // }
     return std::make_tuple( last_classifier_detection_success, frame_debug );
 }
