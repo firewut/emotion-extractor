@@ -2,7 +2,8 @@ ABSPATH = $(PWD)
 PROJECT_PATH = $(ABSPATH)/src
 TESTS_PATH = $(ABSPATH)/tests
 BUILD_PATH = $(ABSPATH)/build
-TEST_FILE_NAME ?= "/tmp/file_B2uYGL.mp4"
+TEST_FILE_NAME ?= "/var/folders/94/1j0b3g453gd0w0thr624cr8m0000gn/T/tmpsWTh9T.mp4"
+DEBUG ?= 0
 
 CC := g++
 HDRS :=
@@ -25,6 +26,6 @@ build: clean prepare_dirs
 		$(BUILD_PATH)/src/*.cpp
 
 run: build
-	time $(BUILD_PATH)/bin/project $(TEST_FILE_NAME)
+	time $(BUILD_PATH)/bin/project $(TEST_FILE_NAME) $(DEBUG)
 
 .PHONY: all clean

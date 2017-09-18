@@ -7,18 +7,17 @@
 
 #include "classes.hpp"
 
-// CASCADE
-Cascade::Cascade(std::string cascade_title, std::string cascade_xml_path){
+Classifier::Classifier(std::string cascade_title, std::string cascade_xml_path){
     title = cascade_title;
     classifierFile = cascade_xml_path;
 
     if( !cascadeClassifier.load( classifierFile ) ){
         std::cout << "Error loading" << classifierFile << "cascade" << std::endl;
-        throw "Cascade load failed";
+        throw "Classifier load failed";
     }
 }
 
-std::tuple<std::vector<cv::Rect>, cv::Mat> Cascade::detect(cv::Mat frame){
+std::tuple<std::vector<cv::Rect>, cv::Mat> Classifier::detect(cv::Mat frame){
     std::vector<cv::Rect> detections;
 
     cascadeClassifier.detectMultiScale(
@@ -64,9 +63,9 @@ std::tuple<std::vector<cv::Rect>, cv::Mat> Cascade::detect(cv::Mat frame){
 }
 
 // EMOTION
-Emotion::Emotion(std::string emotion_title, std::vector<Cascade> emotion_cascades){
+Emotion::Emotion(std::string emotion_title, std::vector<Classifier> emotion_classifiers){
     title = emotion_title;
-    cascades = emotion_cascades;
+    classifiers = emotion_classifiers;
 }
 
 void Emotion::event_at_frame(int frame_number, bool appears){
@@ -240,12 +239,13 @@ std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame){
     cv::Mat frame_gray, frame_debug;
     cv::cvtColor(frame, frame_gray, CV_BGR2GRAY);
 
-    for(size_t i = 0; i < cascades.size(); i++){
-        std::tie(detections, frame_gray) = cascades[i].detect(
+    for(size_t i = 0; i < classifiers.size(); i++){
+        std::tie(detections, frame_gray) = classifiers[i].detect(
             frame_gray
         );
-        if(i == cascades.size()-1){
+        if(i == classifiers.size()-1){
             last_classifier_detection_success = detections.size() > 0;
+            frame_debug = frame_gray.clone();
         }
     }
 
@@ -266,5 +266,5 @@ std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame){
     //         0
     //     );
     // }
-    return std::make_tuple( last_classifier_detection_success, frame );
+    return std::make_tuple( last_classifier_detection_success, frame_debug );
 }

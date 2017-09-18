@@ -7,7 +7,7 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/core/core.hpp>
 
-class Cascade {
+class Classifier {
     std::string title;
     std::string classifierFile;
 
@@ -15,7 +15,7 @@ class Cascade {
     cv::CascadeClassifier cascadeClassifier;
 
     public:
-        Cascade(
+        Classifier(
             std::string,
             std::string
         );
@@ -23,7 +23,7 @@ class Cascade {
 };
 
 class Emotion {
-    std::vector<Cascade> cascades;
+    std::vector<Classifier> classifiers;
 
     std::vector<int> appear_frames;
     std::vector<int> disappear_frames;
@@ -35,7 +35,7 @@ class Emotion {
         std::string title;
         Emotion(
             std::string,
-            std::vector<Cascade>
+            std::vector<Classifier>
         );
 
         std::tuple<bool, cv::Mat> detect(cv::Mat);

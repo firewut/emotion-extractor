@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <map>
+#include <cstdlib>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -14,12 +15,12 @@
 #define SUCCESS_DURATION 5       // Duration of emotion for SUCCESS. Seconds
 #define FRAME_CHECK_INTERVAL 300 // Milliseconds
 
-Cascade face(
+Classifier face(
   "face",
-  "./haarcascades/haarcascade_frontalface_alt.xml"
+  "./haarcascades/haarcascade_frontalface_alt_tree.xml"
 );
 
-Cascade smile(
+Classifier smile(
   "smile",
   "./haarcascades/haarcascade_smile.xml"
 );
@@ -28,7 +29,7 @@ void printProgress(double);
 bool cvMatEQ(cv::Mat, cv::Mat);
 
 int main(int argc, char** argv){
-    std::vector<Cascade> classifier_cascades {
+    std::vector<Classifier> classifier_cascades {
         face,
         smile
     };
@@ -36,7 +37,7 @@ int main(int argc, char** argv){
     std::vector<Emotion> emotions;
     Emotion smiling_face(
         "smile",
-        std::vector<Cascade> {
+        std::vector<Classifier> {
             face,
             smile
         }
@@ -45,6 +46,8 @@ int main(int argc, char** argv){
 
     // Open temporary file
     std::string filename = argv[1];
+    unsigned int debug = atoi(argv[2]);
+
     cv::VideoCapture capture(filename);
     cv::Mat frame, prev_frame;
 
@@ -53,7 +56,7 @@ int main(int argc, char** argv){
     }
 
     cvNamedWindow(MAIN_WINDOW_NAME, CV_WINDOW_AUTOSIZE);
-    cvMoveWindow(MAIN_WINDOW_NAME, 100, 0);
+    cvMoveWindow(MAIN_WINDOW_NAME, 0, 0);
 
     // Meta info
     int fps = (int)capture.get(CV_CAP_PROP_FPS);
@@ -90,9 +93,11 @@ int main(int argc, char** argv){
             );
 
             if(detected){
-                // cv::imshow(MAIN_WINDOW_NAME, emotion_frame);
-                // cv::waitKey(1);
-
+                if(debug == 1){
+                    cv::imshow(MAIN_WINDOW_NAME, emotion_frame);
+                    cv::waitKey(1);
+                };
+                
                 // Appeared
                 if(!detected_state) {
                     emotions[i].event_at_frame(frames_counter, true);
