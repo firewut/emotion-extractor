@@ -11,8 +11,8 @@
 #define MAIN_WINDOW_NAME "Main"
 #define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
 #define PBWIDTH 60
-#define SUCCESS_DURATION 5       // Duration of emotion for SUCCESS. Seconds
-#define FRAME_CHECK_INTERVAL 300 // Milliseconds
+#define SUCCESS_DURATION 5        // Duration of emotion for SUCCESS. Seconds
+#define FRAME_CHECK_INTERVAL 1000 // Milliseconds
 
 Classifier face(
   "face",
@@ -91,7 +91,8 @@ int main(int argc, char** argv){
             bool detected;
 
             std::tie(detected, emotion_frame) = emotions[i].detect(
-                frame
+                frame,
+                debug
             );
 
             if(detected){

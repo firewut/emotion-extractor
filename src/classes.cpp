@@ -24,7 +24,7 @@ std::tuple<std::vector<cv::Rect>, cv::Mat> Classifier::detect(cv::Mat frame){
         frame,
         detections,
         1.1,
-        2,
+        3,
         0 | CV_HAAR_SCALE_IMAGE,
         cv::Size(30, 30)
     );
@@ -231,7 +231,7 @@ std::vector< std::vector<std::string> > Emotion::get_time_ranges(int fps){
 }
 
 
-std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame){
+std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame, unsigned int debug){
     std::vector<cv::Rect> detections;
     bool last_classifier_detection_success = false;
 
@@ -243,16 +243,20 @@ std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame){
         std::tie(detections, frame_gray) = classifiers[i].detect(
             frame_gray
         );
-        cv::putText(
-            frame_gray,
-            classifiers[i].title,
-            cv::Point2f(0,50),
-            cv::FONT_HERSHEY_PLAIN,
-            2,
-            cv::Scalar(255,255,255,.5)
-        );
+
         if(i == classifiers.size()-1){
-            last_classifier_detection_success = detections.size() > 0;
+            last_classifier_detection_success = detections.size() > 0 && (detections.size() % 2) == 0;
+            if(debug == 1){
+                cv::putText(
+                    frame_gray,
+                    classifiers[i].title,
+                    cv::Point2f(0,50),
+                    cv::FONT_HERSHEY_PLAIN,
+                    2,
+                    cv::Scalar(255,255,255,.5)
+                );
+            };
+            std::cout << detections.size() << " " << classifiers[i].title << '\n';
             if(last_classifier_detection_success == true){
                 frame_debug = frame_gray.clone();
             }

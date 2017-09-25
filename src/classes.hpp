@@ -38,7 +38,7 @@ class Emotion {
             std::vector<Classifier>
         );
 
-        std::tuple<bool, cv::Mat> detect(cv::Mat);
+        std::tuple<bool, cv::Mat> detect(cv::Mat, unsigned int);
         void event_at_frame(int, bool);
         void normalize_frames(int);
 
