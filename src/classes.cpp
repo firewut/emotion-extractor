@@ -256,7 +256,6 @@ std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame, unsigned int debug){
                     cv::Scalar(255,255,255,.5)
                 );
             };
-            std::cout << detections.size() << " " << classifiers[i].title << '\n';
             if(last_classifier_detection_success == true){
                 frame_debug = frame_gray.clone();
             }
