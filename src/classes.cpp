@@ -95,13 +95,13 @@ void Emotion::normalize_frames(int success_frames_count){
             52 120
     */
     int border_frame_position = 0;
-    for(int i = 1; i < appear_frames.size(); i++){
+    for(size_t i = 1; i < appear_frames.size(); i++){
         int current_frame = appear_frames[i];
         int frame_diff = current_frame - appear_frames[border_frame_position];
 
         if(frame_diff < success_frames_count){
             appear_frames[i] = -1;
-            for(int j = border_frame_position; j < i; j++){
+            for(size_t j = border_frame_position; j < i; j++){
                 disappear_frames[j] = -1;
             }
         }else{
@@ -123,7 +123,7 @@ void Emotion::normalize_frames(int success_frames_count){
 }
 
 void Emotion::remove_small_intervals(int success_frames_count){
-    for(int i = 0; i < appear_frames.size(); i++){
+    for(size_t i = 0; i < appear_frames.size(); i++){
         int appear_frame = appear_frames[i];
         int dissappear_frame = disappear_frames[i];
         if(dissappear_frame - appear_frame < success_frames_count){
@@ -155,7 +155,7 @@ void Emotion::join_frames(int success_frames_count){
     bool join_triggered = false;
 
     int border_frame_position = 0;
-    for(int i = 1; i < appear_frames.size(); i++){
+    for(size_t i = 1; i < appear_frames.size(); i++){
         int current_frame = appear_frames[i]; // 67
         int frame_diff = current_frame - disappear_frames[border_frame_position]; // 67 - 52
 
@@ -186,7 +186,7 @@ std::vector< std::vector<std::string> > Emotion::get_time_ranges(int fps){
     std::vector< std::vector<std::string> > result;
 
     if(appear_frames.size() == disappear_frames.size()){
-        for(int i = 0; i < appear_frames.size(); i++){
+        for(size_t i = 0; i < appear_frames.size(); i++){
             char appear_timestamp[10], disappear_timestamp[10];
             std::vector<std::string> frame_ranges;
             int total_seconds = 0;
