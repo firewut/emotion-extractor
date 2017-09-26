@@ -12,10 +12,10 @@ set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 include_directories (${extractor_SOURCE_DIR}/src)
 set (
   extractor_SOURCES
-  ${extractor_SOURCE_DIR}/src/main.cpp
   ${extractor_SOURCE_DIR}/src/json.hpp
   ${extractor_SOURCE_DIR}/src/classes.hpp
   ${extractor_SOURCE_DIR}/src/classes.cpp
+  ${extractor_SOURCE_DIR}/src/main.cpp
 )
 add_executable (extractor ${extractor_SOURCES})
 target_link_libraries(extractor ${OpenCV_LIBS})
