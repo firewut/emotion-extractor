@@ -57,7 +57,7 @@ int main(int argc, char** argv){
         throw "Error when reading file";
     }
 
-    cvNamedWindow(MAIN_WINDOW_NAME, CV_WINDOW_AUTOSIZE);
+    cvNamedWindow(MAIN_WINDOW_NAME, 1);
     cvMoveWindow(MAIN_WINDOW_NAME, 0, 0);
 
     // Meta info

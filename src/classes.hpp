@@ -19,7 +19,7 @@ class Classifier {
             std::string,
             std::string
         );
-        std::tuple<std::vector<cv::Rect>, cv::Mat> detect(cv::Mat);
+        std::vector<cv::Mat> detect(std::vector<cv::Mat>);
 };
 
 class Emotion {

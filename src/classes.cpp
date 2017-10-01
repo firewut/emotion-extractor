@@ -17,49 +17,43 @@ Classifier::Classifier(std::string cascade_title, std::string cascade_xml_path){
     }
 }
 
-std::tuple<std::vector<cv::Rect>, cv::Mat> Classifier::detect(cv::Mat frame){
-    std::vector<cv::Rect> detections;
+std::vector<cv::Mat> Classifier::detect(std::vector<cv::Mat> frames){
+    std::vector<cv::Mat> detected_materials;
 
-    cascadeClassifier.detectMultiScale(
-        frame,
-        detections,
-        1.1,
-        3,
-        0 | CV_HAAR_SCALE_IMAGE,
-        cv::Size(30, 30)
-    );
+    for(size_t i = 0; i < frames.size(); i++){
+        std::vector<cv::Rect> detections;
+        cv::Mat frame;
+        // cv::cvtColor(frames[i], frame, CV_BGR2GRAY);
+        frame = frames[i].clone();
 
-    // Apply mask to all detected regions
-    cv::Mat mask = cv::Mat::zeros(
-        frame.size(),
-        frame.type()
-    );
-    cv::Mat dstImage = cv::Mat::zeros(
-        frame.size(),
-        frame.type()
-    );
-
-    // Draw rectangles at mask
-    for(size_t d_i = 0; d_i < detections.size(); d_i++) {
-        cv::rectangle(
-            mask,
-            cv::Point(
-                detections[d_i].x,
-                detections[d_i].y
+        cascadeClassifier.detectMultiScale(
+            frame,
+            detections,
+            1.1,
+            3,
+            CV_HAAR_SCALE_IMAGE | CV_HAAR_DO_CANNY_PRUNING,
+            cv::Size(
+              30,
+              30
             ),
-            cv::Point(
-                detections[d_i].x + detections[d_i].width,
-                detections[d_i].y + detections[d_i].height
-            ),
-            cv::Scalar( 255, 255, 255 ),
-            CV_FILLED,
-            8,
-            0
+            cv::Size(
+              frame.size().width/3,
+              frame.size().width/3
+            )
         );
-    }
-    frame.copyTo(dstImage, mask);
 
-    return std::make_tuple(detections, dstImage);
+        for(size_t d_i = 0; d_i < detections.size(); d_i++) {
+            cv::Mat _material = cv::Mat(
+                frame,
+                detections[d_i]
+            );
+            detected_materials.push_back(
+                _material
+            );
+        }
+    }
+
+    return detected_materials;
 }
 
 // EMOTION
@@ -232,32 +226,37 @@ std::vector< std::vector<std::string> > Emotion::get_time_ranges(int fps){
 
 
 std::tuple<bool, cv::Mat> Emotion::detect(cv::Mat frame, unsigned int debug){
-    std::vector<cv::Rect> detections;
+    std::vector<cv::Mat> _detected_materials;
+
     bool last_classifier_detection_success = false;
 
     // Possible
-    cv::Mat frame_gray, frame_debug;
-    cv::cvtColor(frame, frame_gray, CV_BGR2GRAY);
+    cv::Mat frame_debug;
+
+    // Detected materials
+    _detected_materials.push_back(frame);
 
     for(size_t i = 0; i < classifiers.size(); i++){
-        std::tie(detections, frame_gray) = classifiers[i].detect(
-            frame_gray
+        _detected_materials = classifiers[i].detect(
+            _detected_materials
         );
 
         if(i == classifiers.size()-1){
-            last_classifier_detection_success = detections.size() > 0 && (detections.size() % 2) == 0;
-            if(debug == 1){
-                cv::putText(
-                    frame_gray,
-                    classifiers[i].title,
-                    cv::Point2f(0,50),
-                    cv::FONT_HERSHEY_PLAIN,
-                    2,
-                    cv::Scalar(255,255,255,.5)
-                );
-            };
+            std::vector<cv::Mat> detected_materials;
+            for(size_t d_i = 0; d_i < _detected_materials.size(); d_i++){
+                if(!_detected_materials[d_i].empty()){
+                    detected_materials.push_back(_detected_materials[d_i]);
+                }
+            }
+
+            last_classifier_detection_success = detected_materials.size() > 0;
             if(last_classifier_detection_success == true){
-                frame_debug = frame_gray.clone();
+                if(debug == 1){
+                    cv::hconcat(
+                        detected_materials,
+                        frame_debug
+                    );
+                }
             }
         }
     }
